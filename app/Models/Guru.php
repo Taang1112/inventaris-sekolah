@@ -9,7 +9,13 @@ class Guru extends Model
 {
     use HasFactory;
 
-    protected $table = 'guru';
+    protected $table = 'guru'; // WAJIB
+
+    protected $primaryKey = 'guru_id'; // WAJIB karena bukan id
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
 
     protected $fillable = [
         'nama_guru',

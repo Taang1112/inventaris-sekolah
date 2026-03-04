@@ -2,38 +2,79 @@
 <html>
 <head>
     <title>Tambah Guru</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            padding: 8px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #3498db;
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background: #7f8c8d;
+            color: white;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Tambah Guru</h2>
+<div class="container">
+    <h2>Tambah Guru</h2>
 
-    <a href="{{ route('guru.index') }}" class="btn btn-secondary mb-3">
-        ← Kembali
-    </a>
+    @if ($errors->any())
+        <div class="error">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form action="{{ route('guru.store') }}" method="POST">
         @csrf
 
-        <div class="mb-3">
-            <label class="form-label">Nama Guru</label>
-            <input type="text" name="nama_guru" class="form-control" required>
-        </div>
+        <label>Nama Guru</label>
+        <input type="text" name="nama_guru" value="{{ old('nama_guru') }}">
 
-        <div class="mb-3">
-            <label class="form-label">NIP</label>
-            <input type="text" name="nip" class="form-control" required>
-        </div>
+        <label>NIP</label>
+        <input type="text" name="nip" value="{{ old('nip') }}">
 
-        <div class="mb-3">
-            <label class="form-label">No HP</label>
-            <input type="text" name="no_hp" class="form-control">
-        </div>
+        <label>No HP</label>
+        <input type="text" name="no_hp" value="{{ old('no_hp') }}">
 
-        <button type="submit" class="btn btn-success">
-            Simpan
-        </button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        <a href="{{ route('guru.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 

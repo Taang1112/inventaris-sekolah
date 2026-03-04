@@ -21,12 +21,12 @@ class GuruController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_guru' => 'required',
-            'nip' => 'required|unique:guru,nip',
-            'no_hp' => 'nullable'
+            'nama_guru' => 'required|max:100',
+            'nip' => 'required|max:30|unique:guru,nip',
+            'no_hp' => 'nullable|max:20'
         ]);
 
-        Guru::create($request->all());
+        Guru::create($request->only('nama_guru','nip','no_hp'));
 
         return redirect()->route('guru.index')
                          ->with('success', 'Data guru berhasil ditambahkan');
@@ -43,12 +43,12 @@ class GuruController extends Controller
         $guru = Guru::findOrFail($id);
 
         $request->validate([
-            'nama_guru' => 'required',
-            'nip' => 'required|unique:guru,nip,'.$id,
-            'no_hp' => 'nullable'
+            'nama_guru' => 'required|max:100',
+            'nip' => 'required|max:30|unique:guru,nip,' . $id . ',guru_id',
+            'no_hp' => 'nullable|max:20'
         ]);
 
-        $guru->update($request->all());
+        $guru->update($request->only('nama_guru','nip','no_hp'));
 
         return redirect()->route('guru.index')
                          ->with('success', 'Data guru berhasil diupdate');

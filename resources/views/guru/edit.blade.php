@@ -2,45 +2,77 @@
 <html>
 <head>
     <title>Edit Guru</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            padding: 8px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-success {
+            background: #27ae60;
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background: #7f8c8d;
+            color: white;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Edit Guru</h2>
+<div class="container">
+    <h2>Edit Guru</h2>
 
-    <a href="{{ route('guru.index') }}" class="btn btn-secondary mb-3">
-        ← Kembali
-    </a>
+    @if ($errors->any())
+        <div class="error">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-    <form action="{{ route('guru.update', $guru->id) }}" method="POST">
+    <form action="{{ route('guru.update', $guru->guru_id) }}" method="POST">
         @csrf
         @method('PUT')
 
-        <div class="mb-3">
-            <label class="form-label">Nama Guru</label>
-            <input type="text" name="nama_guru" 
-                   value="{{ $guru->nama_guru }}" 
-                   class="form-control" required>
-        </div>
+        <label>Nama Guru</label>
+        <input type="text" name="nama_guru" value="{{ old('nama_guru', $guru->nama_guru) }}">
 
-        <div class="mb-3">
-            <label class="form-label">NIP</label>
-            <input type="text" name="nip" 
-                   value="{{ $guru->nip }}" 
-                   class="form-control" required>
-        </div>
+        <label>NIP</label>
+        <input type="text" name="nip" value="{{ old('nip', $guru->nip) }}">
 
-        <div class="mb-3">
-            <label class="form-label">No HP</label>
-            <input type="text" name="no_hp" 
-                   value="{{ $guru->no_hp }}" 
-                   class="form-control">
-        </div>
+        <label>No HP</label>
+        <input type="text" name="no_hp" value="{{ old('no_hp', $guru->no_hp) }}">
 
-        <button type="submit" class="btn btn-primary">
-            Update
-        </button>
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{{ route('guru.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 

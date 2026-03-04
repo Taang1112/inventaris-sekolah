@@ -1,25 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route Guru
+/*
+|--------------------------------------------------------------------------
+| RESOURCE ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::resource('barang', BarangController::class);
 Route::resource('guru', GuruController::class);
-
-// =========================
-// Route Peminjaman
-// =========================
-
-// Resource tanpa show & destroy
-Route::resource('peminjaman', PeminjamanController::class)
-    ->except(['show','destroy']);
-
-// Route khusus untuk kembalikan barang
-Route::get('peminjaman/{id}/kembalikan',
-    [PeminjamanController::class, 'kembalikan']
-)->name('peminjaman.kembalikan');
+Route::resource('kelas', KelasController::class);
+Route::resource('peminjaman', PeminjamanController::class);
+Route::resource('pengembalian', PengembalianController::class);
