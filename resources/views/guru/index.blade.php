@@ -2,60 +2,101 @@
 <html>
 <head>
     <title>Data Guru</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 8px 14px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #3498db;
+            color: #fff;
+        }
+        .btn-warning {
+            background: #f39c12;
+            color: #fff;
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        table th {
+            background: #f2f2f2;
+        }
+        .success {
+            color: green;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Data Guru</h2>
-
-    <a href="{{ route('guru.create') }}" class="btn btn-primary mb-3">
-        + Tambah Guru
-    </a>
+<div class="container">
+    <h2>Data Guru</h2>
 
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
+    <a href="{{ route('guru.create') }}" class="btn btn-primary">+ Tambah Guru</a>
+
+    <table>
+        <thead>
             <tr>
                 <th>No</th>
                 <th>Nama Guru</th>
                 <th>NIP</th>
                 <th>No HP</th>
-                <th width="150">Aksi</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($guru as $g)
+            @foreach($guru as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $g->nama_guru }}</td>
-                <td>{{ $g->nip }}</td>
-                <td>{{ $g->no_hp }}</td>
+                <td>{{ $item->nama_guru }}</td>
+                <td>{{ $item->nip }}</td>
+                <td>{{ $item->no_hp }}</td>
                 <td>
-                    <a href="{{ route('guru.edit', $g->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ route('guru.edit', $item->guru_id) }}" class="btn btn-warning">Edit</a>
 
-                    <form action="{{ route('guru.destroy', $g->id) }}" 
-                          method="POST" 
-                          style="display:inline;">
+                    <form action="{{ route('guru.destroy', $item->guru_id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
-                        <button onclick="return confirm('Yakin hapus?')" 
-                                class="btn btn-danger btn-sm">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin hapus?')">
                             Hapus
                         </button>
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center">Data belum ada</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 </div>
