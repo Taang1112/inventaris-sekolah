@@ -9,12 +9,12 @@ class CreateGuruTable extends Migration
     public function up()
     {
         Schema::create('guru', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_guru');
-            $table->string('nip')->unique();
-            $table->string('no_hp')->nullable();
-            $table->timestamps();
-        });
+    $table->bigIncrements('guru_id');
+    $table->string('nama_guru', 100);
+    $table->string('nip', 30)->unique();
+    $table->string('no_hp', 20)->nullable();
+    $table->timestamps();
+});
     }
 
     public function down()
