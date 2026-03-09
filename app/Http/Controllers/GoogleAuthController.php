@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Throwable;
 
 class GoogleAuthController extends Controller
 {
@@ -18,21 +16,40 @@ class GoogleAuthController extends Controller
     public function callbackGoogle()
     {
         try {
-    $google_user = Socialite::driver('google')->user();
 
-    $user = User::create([
-        'name' => $google_user->getName(),
-        'email' => $google_user->getEmail(),
-        'google_id' => $google_user->getId(),
-        'password' => bcrypt('google-login')
-    ]);
+            $google_user = Socialite::driver('google')->user();
 
-    Auth::login($user);
-    return redirect()->intended('dashboard');
+            // cek apakah user sudah ada berdasarkan email
+            $user = User::where('email', $google_user->getEmail())->first();
 
-    } catch (Throwable $th) {
-        dd('Something went wrong! ' . $th->getMessage());
+            if (!$user) {
+
+                // jika belum ada → buat user baru
+                $user = User::create([
+                    'name' => $google_user->getName(),
+                    'email' => $google_user->getEmail(),
+                    'google_id' => $google_user->getId(),
+                    'password' => bcrypt('google-login')
+                ]);
+
+            } else {
+
+                // jika user ada tapi belum punya google_id
+                if (!$user->google_id) {
+                    $user->google_id = $google_user->getId();
+                    $user->save();
+                }
+
+            }
+
+            Auth::login($user);
+
+            return redirect()->intended('/dashboard');
+
+        } catch (\Exception $e) {
+
+            return redirect('/login')->with('error','Login Google gagal');
+
+        }
     }
-
-}
 }

@@ -5,7 +5,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\GoogleAuthController;
+
 
 
 Route::get('/', function () {
@@ -21,6 +23,25 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
+
+
+    /*
+|--------------------------------------------------------------------------
+| Barang
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
+
+Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');
+
+Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
+
+Route::get('/barang/{id}/edit', [BarangController::class, 'edit'])->name('barang.edit');
+
+Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
+
+Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +84,8 @@ Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('
 Route::get('/peminjaman/{id}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
 
 Route::get('/peminjaman/{id}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
+
+
 
 //loginbygoogle
 

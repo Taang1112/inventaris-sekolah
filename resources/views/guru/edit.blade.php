@@ -1,239 +1,302 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Guru | Inventaris Sekolah</title>
-    
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+@extends('layouts.app')
 
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg-body: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --white: #ffffff;
-            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --border-color: #e2e8f0;
-            --error: #ef4444;
-            --success: #10b981;
-            --success-hover: #059669;
+@section('title', 'Edit Guru')
+@section('header-title', 'Manajemen Guru')
+@section('page-title', 'Edit Data Guru')
+@section('page-icon', 'fas fa-user-edit')
+@section('breadcrumb', 'Edit Guru')
+
+@section('styles')
+<style>
+    /* Form Container */
+    .form-container {
+        background: white;
+        border-radius: 28px;
+        padding: 35px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Error Alert */
+    .error-alert {
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        color: #991b1b;
+        padding: 20px 24px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        border-left: 5px solid #ef4444;
+    }
+
+    .error-alert ul {
+        list-style: none;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    .error-alert li {
+        margin: 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .error-alert li i {
+        color: #ef4444;
+        font-size: 14px;
+    }
+
+    .error-alert strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 16px;
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 16px;
+        color: #94a3b8;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+
+    input {
+        width: 100%;
+        padding: 16px 20px 16px 50px;
+        border: 2px solid #e2e8f0;
+        border-radius: 20px;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+        background: white;
+        color: #1e293b;
+    }
+
+    input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    input:focus + .input-icon {
+        color: #4f46e5;
+    }
+
+    input:hover {
+        border-color: #94a3b8;
+    }
+
+    /* Readonly input */
+    input[readonly] {
+        background: #f1f5f9;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
+    /* Helper Text */
+    .helper-text {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 6px;
+        margin-left: 16px;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 35px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(145deg, #4f46e5, #7c3aed);
+        color: white;
+        padding: 16px 30px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        padding: 16px 30px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+        flex: 1;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #1e293b;
+        transform: translateY(-2px);
+    }
+
+    /* Info Card */
+    .info-card {
+        background: linear-gradient(145deg, #eef2ff, #e0e7ff);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-left: 5px solid #4f46e5;
+    }
+
+    .info-card i {
+        font-size: 28px;
+        color: #4f46e5;
+        background: white;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.2);
+    }
+
+    .info-card p {
+        color: #1e293b;
+        font-size: 14px;
+        line-height: 1.6;
+        flex: 1;
+    }
+
+    .info-card strong {
+        color: #4f46e5;
+        font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 20px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+        
+        .form-actions {
+            flex-direction: column;
         }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding: 40px 20px;
-            line-height: 1.5;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+        
+        .info-card {
+            flex-direction: column;
+            text-align: center;
         }
+    }
+</style>
+@endsection
 
-        .wrapper {
-            width: 100%;
-            max-width: 540px;
-        }
+@section('content')
+    <div class="form-container">
+        @if ($errors->any())
+            <div class="error-alert">
+                <strong><i class="fas fa-exclamation-triangle"></i> Terdapat kesalahan:</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>
+                            <i class="fas fa-times-circle"></i>
+                            {{ $error }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        .header-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 32px;
-        }
-
-        .btn-back {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--white);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-main);
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .btn-back:hover {
-            background: #f1f5f9;
-            transform: translateX(-2px);
-        }
-
-        .header-section h1 {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            padding: 32px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background-color: #fcfdfe;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-            background-color: var(--white);
-        }
-
-        .alert-error {
-            background-color: #fef2f2;
-            border: 1px solid #fee2e2;
-            color: var(--error);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-
-        .alert-error ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .alert-error li {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .alert-error li::before {
-            content: "";
-            display: block;
-            width: 4px;
-            height: 4px;
-            background-color: var(--error);
-            border-radius: 50%;
-        }
-
-        .btn-submit {
-    width: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background-color: var(--primary);
-    color: var(--white);
-    border: none;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
-    margin-top: 8px;
-}
-
-.btn-submit:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.4);
-}
-
-.btn-submit:active {
-    transform: translateY(0);
-}
-    </style>
-</head>
-<body>
-
-<div class="wrapper">
-    <div class="header-section">
-        <a href="{{ route('guru.index') }}" class="btn-back" title="Kembali">
-            <i data-lucide="chevron-left" size="20"></i>
-        </a>
-        <h1>Edit Data Guru</h1>
-    </div>
-
-    @if ($errors->any())
-        <div class="alert-error">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="info-card">
+            <i class="fas fa-user-edit"></i>
+            <p>Anda sedang mengedit data guru: <strong>{{ $guru->nama_guru }}</strong> (NIP: {{ $guru->nip }})</p>
         </div>
-    @endif
 
-    <div class="card">
         <form action="{{ route('guru.update', $guru->guru_id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="form-group">
-                <label for="nama_guru">Nama Lengkap Guru</label>
-                <input type="text" id="nama_guru" name="nama_guru" class="form-control" placeholder="Contoh: Budi Santoso, S.Pd." value="{{ old('nama_guru', $guru->nama_guru) }}" required autofocus>
+                <label>Nama Lengkap <span style="color: #ef4444;">*</span></label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" name="nama_guru" value="{{ old('nama_guru', $guru->nama_guru) }}" 
+                           placeholder="Masukkan nama lengkap guru" required>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="nip">Nomer Induk Pegawai (NIP)</label>
-                <input type="text" id="nip" name="nip" class="form-control" placeholder="Isikan 18 digit NIP" value="{{ old('nip', $guru->nip) }}" required>
+                <label>NIP <span style="color: #ef4444;">*</span></label>
+                <div class="input-wrapper">
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" name="nip" value="{{ old('nip', $guru->nip) }}" 
+                           placeholder="Contoh: 198507152010011012" required 
+                           {{-- optional: readonly jika NIP tidak boleh diubah --}}
+                           >
+                </div>
+                <div class="helper-text">
+                    <i class="fas fa-info-circle"></i> Nomor Induk Pegawai
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="no_hp">Nomer Telepon / WhatsApp</label>
-                <input type="text" id="no_hp" name="no_hp" class="form-control" placeholder="Contoh: 08123456789" value="{{ old('no_hp', $guru->no_hp) }}" required>
+                <label>No. Telepon <span style="color: #ef4444;">*</span></label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone-alt input-icon"></i>
+                    <input type="text" name="no_hp" value="{{ old('no_hp', $guru->no_hp) }}" 
+                           placeholder="Contoh: 081234567890" required>
+                </div>
             </div>
 
-            <button type="submit" class="btn-submit">
-                <i data-lucide="pencil-line" size="20"></i>
-                Perbarui Data Guru
-            </button>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Data Guru
+                </button>
+                <a href="{{ route('guru.index') }}" class="btn-secondary">
+                    <i class="fas fa-times"></i> Batal
+                </a>
+            </div>
         </form>
     </div>
-</div>
-
-<script>
-    // Initialize Lucide icons
-    lucide.createIcons();
-</script>
-
-</body>
-</html>
+@endsection
