@@ -3,130 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Peminjaman</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f5f6f8;
             padding: 30px;
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .container {
+        .card {
             background: #ffffff;
+            border-radius: 8px;
             padding: 20px;
-            border-radius: 6px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
-        .button {
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .btn {
             display: inline-block;
+            width: fit-content;
             padding: 8px 14px;
-            background-color: #007bff;
-            color: white;
+            background-color: #0d6efd;
+            color: #fff;
             text-decoration: none;
             border-radius: 4px;
             font-size: 14px;
         }
 
-        .button:hover {
-            background-color: #0056b3;
+        .btn:hover {
+            background-color: #0b5ed7;
         }
 
         .btn-success {
-            background-color: #28a745;
+            background-color: #198754;
         }
 
         .btn-success:hover {
-            background-color: #1e7e34;
+            background-color: #157347;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #000;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
+            margin-top: 10px;
         }
 
         table th {
-            background-color: #f2f2f2;
+            background-color: #f1f1f1;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
         }
 
-        .success {
-            color: green;
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .alert-success {
+            background: #d1e7dd;
+            color: #0f5132;
+            padding: 10px;
+            border-radius: 4px;
             margin-bottom: 10px;
         }
 
-        .error {
-            color: red;
+        .alert-error {
+            background: #f8d7da;
+            color: #842029;
+            padding: 10px;
+            border-radius: 4px;
             margin-bottom: 10px;
+        }
+
+        .aksi a {
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
 
-<h2>Data Peminjaman Inventaris</h2>
+<div class="card">
 
-<div class="container">
+    <div class="card-header">
+        <h2>Data Peminjaman</h2>
+
+        <a href="{{ route('peminjaman.create') }}" class="btn">
+            + Tambah Peminjaman
+        </a>
+    </div>
 
     @if(session('success'))
-        <p class="success">{{ session('success') }}</p>
+        <div class="alert-success">
+            {{ session('success') }}
+        </div>
     @endif
 
     @if(session('error'))
-        <p class="error">{{ session('error') }}</p>
+        <div class="alert-error">
+            {{ session('error') }}
+        </div>
     @endif
 
-    <a href="{{ route('peminjaman.create') }}" class="button">
-        + Tambah Peminjaman
-    </a>
-
     <table>
-        <tr>
-            <th>No</th>
-            <th>Guru</th>
-            <th>Kelas</th>
-            <th>Barang</th>
-            <th>Jumlah</th>
-            <th>Tanggal Pinjam</th>
-            <th>Status</th>
-            <th>Aksi</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Guru</th>
+                <th>Kelas</th>
+                <th>Barang</th>
+                <th>Jumlah</th>
+                <th>Tanggal Pinjam</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
 
-        @foreach($data as $index => $row)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $row->guru->nama_guru }}</td>
-            <td>{{ $row->kelas->nama_kelas }}</td>
-            <td>{{ $row->barang->nama_barang }}</td>
-            <td>{{ $row->jumlah_pinjam }}</td>
-            <td>{{ $row->tanggal_pinjam }}</td>
-            <td>{{ ucfirst($row->status) }}</td>
-            <td>
-                @if($row->status == 'dipinjam')
-                    <a href="{{ route('peminjaman.edit', $row->peminjaman_id) }}" class="button">
-                        Edit
-                    </a>
+        <tbody>
+        @forelse($data as $index => $row)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $row->guru->nama_guru }}</td>
+                <td>{{ $row->kelas->nama_kelas }}</td>
+                <td>{{ $row->barang->nama_barang }}</td>
+                <td>{{ $row->jumlah_pinjam }}</td>
+                <td>{{ $row->tanggal_pinjam }}</td>
+                <td>{{ ucfirst($row->status) }}</td>
+                <td class="aksi">
+                    @if($row->status == 'dipinjam')
+                        <a href="{{ route('peminjaman.edit', $row->peminjaman_id) }}" class="btn btn-warning">
+                            Edit
+                        </a>
 
-                    <a href="{{ route('peminjaman.kembalikan', $row->peminjaman_id) }}" class="button btn-success">
-                        Kembalikan
-                    </a>
-                @else
-                    -
-                @endif
-            </td>
-        </tr>
-        @endforeach
-
+                        <a href="{{ route('peminjaman.kembalikan', $row->peminjaman_id) }}" class="btn btn-success">
+                            Kembalikan
+                        </a>
+                    @else
+                        -
+                    @endif
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="8" style="text-align:center;">
+                    Data peminjaman belum tersedia
+                </td>
+            </tr>
+        @endforelse
+        </tbody>
     </table>
 
 </div>

@@ -8,111 +8,135 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffe6f2;
-            padding: 20px;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
         }
 
-        h2 {
-            text-align: center;
-            color: #d63384;
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        form {
-            width: 400px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        .card {
+            width: 420px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
         }
 
         label {
-            font-weight: bold;
+            font-weight: 500;
         }
 
-        select, input {
+        input, select {
             width: 100%;
             padding: 8px;
-            margin: 8px 0 15px 0;
-            border: 1px solid #ffb6c1;
-            border-radius: 5px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
         }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #ff69b4;
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 8px 15px;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: #ff1493;
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5c636a;
         }
 
         .error {
             color: red;
-            text-align: center;
-        }
-
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #d63384;
-            text-decoration: none;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-<h2>Form Tambah Peminjaman</h2>
+<div class="container">
+    <div class="card">
+        <h2>Tambah Peminjaman</h2>
 
-@if(session('error'))
-    <p class="error">{{ session('error') }}</p>
-@endif
+        @if(session('error'))
+            <div class="error">
+                {{ session('error') }}
+            </div>
+        @endif
 
-<form action="{{ route('peminjaman.store') }}" method="POST">
-    @csrf
+        <form action="{{ route('peminjaman.store') }}" method="POST">
+            @csrf
 
-    <label>Guru</label>
-    <select name="guru_id" required>
-        <option value="">-- Pilih Guru --</option>
-        @foreach($guru as $g)
-            <option value="{{ $g->guru_id }}">{{ $g->nama_guru }}</option>
-        @endforeach
-    </select>
+            <label>Guru</label>
+            <select name="guru_id" required>
+                <option value="">-- Pilih Guru --</option>
+                @foreach($guru as $g)
+                    <option value="{{ $g->guru_id }}">{{ $g->nama_guru }}</option>
+                @endforeach
+            </select>
 
-    <label>Kelas</label>
-    <select name="kelas_id" required>
-        <option value="">-- Pilih Kelas --</option>
-        @foreach($kelas as $k)
-            <option value="{{ $k->kelas_id }}">{{ $k->nama_kelas }}</option>
-        @endforeach
-    </select>
+            <label>Kelas</label>
+            <select name="kelas_id" required>
+                <option value="">-- Pilih Kelas --</option>
+                @foreach($kelas as $k)
+                    <option value="{{ $k->kelas_id }}">{{ $k->nama_kelas }}</option>
+                @endforeach
+            </select>
 
-    <label>Barang</label>
-    <select name="barang_id" required>
-        <option value="">-- Pilih Barang --</option>
-        @foreach($barang as $b)
-            <option value="{{ $b->barang_id }}">
-                {{ $b->nama_barang }} (Stok: {{ $b->jumlah_tersedia }})
-            </option>
-        @endforeach
-    </select>
+            <label>Barang</label>
+            <select name="barang_id" required>
+                <option value="">-- Pilih Barang --</option>
+                @foreach($barang as $b)
+                    <option value="{{ $b->barang_id }}">
+                        {{ $b->nama_barang }} (Stok: {{ $b->jumlah_tersedia }})
+                    </option>
+                @endforeach
+            </select>
 
-    <label>Jumlah Pinjam</label>
-    <input type="number" name="jumlah_pinjam" min="1" required>
+            <label>Jumlah Pinjam</label>
+            <input type="number" name="jumlah_pinjam" min="1" required>
 
-    <label>Tanggal Pinjam</label>
-    <input type="date" name="tanggal_pinjam" required>
+            <label>Tanggal Pinjam</label>
+            <input type="date" name="tanggal_pinjam" required>
 
-    <button type="submit">Simpan</button>
-</form>
+            <div class="btn-group">
+                <button type="submit" class="btn-primary">Simpan</button>
+                <a href="{{ route('peminjaman.index') }}" class="btn-secondary">Kembali</a>
+            </div>
 
-<a href="{{ route('peminjaman.index') }}" class="back">← Kembali ke Data</a>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>
