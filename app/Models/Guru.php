@@ -22,4 +22,5 @@ class Guru extends Model
         'nip',
         'no_hp'
     ];
+
 }
