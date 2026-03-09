@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\PeminjamanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,5 +45,21 @@ Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
 Route::get('/kelas/{id}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
 Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
 Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
+
+/*
+|--------------------------------------------------------------------------
+| Peminjaman
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+
+Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
+
+Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+
+Route::get('/peminjaman/{id}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
+
+Route::get('/peminjaman/{id}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
 
 require __DIR__.'/auth.php';

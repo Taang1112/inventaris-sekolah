@@ -37,6 +37,14 @@
                     </a>
                 </li>
 
+                <!-- Peminjaman -->
+                <li class="nav-item">
+                    <a href="/peminjaman" class="nav-link">
+                        <i class="nav-icon bi bi-journal-arrow-up"></i>
+                        <p>Peminjaman</p>
+                    </a>
+                </li>
+
             </ul>
         </nav>
     </div>

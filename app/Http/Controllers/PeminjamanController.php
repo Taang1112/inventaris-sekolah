@@ -75,4 +75,14 @@ class PeminjamanController extends Controller
         return redirect()->route('peminjaman.index')
             ->with('success', 'Barang berhasil dikembalikan');
     }
+
+    public function edit($id)
+{
+    $peminjaman = Peminjaman::findOrFail($id);
+    $guru = Guru::all();
+    $kelas = Kelas::all();
+    $barang = Barang::all();
+
+    return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
+}
 }
