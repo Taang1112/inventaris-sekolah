@@ -140,7 +140,7 @@ canvas {
 <div class="navbar">
     <h3>Inventaris Sekolah</h3>
     <div>
-        <a href="/">Home</a>
+        <a href="/">Dashboard</a>
         <a href="/login">Login</a>
     </div>
 </div>
