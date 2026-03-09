@@ -56,6 +56,21 @@ Lihat Data Kelas
 </div>
 </div>
 
+<!-- Peminjaman -->
+<div class="col-lg-6 col-6">
+<div class="small-box text-bg-warning">
+<div class="inner">
+<h3>{{ $peminjaman }}</h3>
+<p>Total Peminjaman</p>
+</div>
+
+<a href="/peminjaman" class="small-box-footer">
+Lihat Data Peminjaman
+</a>
+
+</div>
+</div>
+
 </div>
 
 
@@ -76,6 +91,7 @@ Lihat Data Kelas
 <ul>
 <li>Total Guru : <b>{{ $guru }}</b></li>
 <li>Total Kelas : <b>{{ $kelas }}</b></li>
+<li>Total Peminjaman : <b>{{ $peminjaman }}</b></li>
 </ul>
 
 </div>
