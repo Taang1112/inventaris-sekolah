@@ -153,33 +153,33 @@
         }
 
         .btn-submit {
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background-color: var(--success);
-            color: var(--white);
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
-            margin-top: 8px;
-        }
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+    margin-top: 8px;
+}
 
-        .btn-submit:hover {
-            background-color: var(--success-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 10px -1px rgba(16, 185, 129, 0.4);
-        }
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.4);
+}
 
-        .btn-submit:active {
-            transform: translateY(0);
-        }
+.btn-submit:active {
+    transform: translateY(0);
+}
     </style>
 </head>
 <body>
