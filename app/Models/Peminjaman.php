@@ -19,19 +19,21 @@ class Peminjaman extends Model
         'status'
     ];
 
-    // Relasi
+    // relasi guru
     public function guru()
     {
-        return $this->belongsTo(Guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id', 'guru_id');
     }
 
+    // relasi kelas
     public function kelas()
     {
-        return $this->belongsTo(Kelas::class, 'kelas_id');
+        return $this->belongsTo(Kelas::class, 'kelas_id', 'kelas_id');
     }
 
+    // relasi barang
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'barang_id');
+        return $this->belongsTo(Barang::class, 'barang_id', 'barang_id');
     }
 }

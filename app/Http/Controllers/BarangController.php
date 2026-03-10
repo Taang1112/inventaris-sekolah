@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use App\Exports\BarangExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class BarangController extends Controller
 {
@@ -63,6 +66,11 @@ class BarangController extends Controller
         return redirect()->route('barang.index')
                          ->with('success', 'Data barang berhasil diupdate');
     }
+
+    public function exportExcel()
+{
+    return Excel::download(new BarangExport, 'barang.xlsx');
+}
 
     public function destroy($id)
     {

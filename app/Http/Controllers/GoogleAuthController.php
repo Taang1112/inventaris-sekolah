@@ -17,39 +17,40 @@ class GoogleAuthController extends Controller
     {
         try {
 
-            $google_user = Socialite::driver('google')->user();
+            // stateless supaya OAuth tidak ribut soal session di localhost
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
-            // cek apakah user sudah ada berdasarkan email
-            $user = User::where('email', $google_user->getEmail())->first();
+            // cari user berdasarkan email
+            $user = User::where('email', $googleUser->getEmail())->first();
 
             if (!$user) {
 
-                // jika belum ada → buat user baru
                 $user = User::create([
-                    'name' => $google_user->getName(),
-                    'email' => $google_user->getEmail(),
-                    'google_id' => $google_user->getId(),
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
                     'password' => bcrypt('google-login')
                 ]);
 
             } else {
 
-                // jika user ada tapi belum punya google_id
                 if (!$user->google_id) {
-                    $user->google_id = $google_user->getId();
+                    $user->google_id = $googleUser->getId();
                     $user->save();
                 }
 
             }
 
-            Auth::login($user);
+            // login user
+            Auth::login($user, true);
 
-            return redirect()->intended('/dashboard');
+            // redirect ke dashboard
+            return redirect('/dashboard');
 
         } catch (\Exception $e) {
 
-            return redirect('/login')->with('error','Login Google gagal');
-
+            // tampilkan error asli supaya kelihatan kalau ada yang rusak
+            dd($e->getMessage());
         }
     }
 }
