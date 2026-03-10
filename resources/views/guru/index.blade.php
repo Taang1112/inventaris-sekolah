@@ -66,6 +66,8 @@
     @endif
 
     <a href="{{ route('guru.create') }}" class="btn btn-primary">+ Tambah Guru</a>
+    <a href="{{ route('guru.export.excel') }}" class="btn btn-success">Export Excel</a>
+    <a href="{{ route('guru.export.pdf') }}" class="btn btn-danger">Export PDF</a>
 
     <table>
         <thead>

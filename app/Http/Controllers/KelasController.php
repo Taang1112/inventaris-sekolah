@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use App\Exports\KelasExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KelasController extends Controller
 {
@@ -44,5 +47,17 @@ class KelasController extends Controller
     {
         Kelas::destroy($id);
         return redirect()->route('kelas.index');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new KelasExport, 'kelas.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $kelas = Kelas::with('guru')->get();
+        $pdf = Pdf::loadView('exports.kelas_pdf', compact('kelas'));
+        return $pdf->download('kelas.pdf');
     }
 }

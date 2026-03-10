@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use App\Exports\BarangExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BarangController extends Controller
 {
@@ -71,5 +74,17 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')
                          ->with('success', 'Data barang berhasil dihapus');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new BarangExport, 'barang.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $barang = Barang::all();
+        $pdf = Pdf::loadView('exports.barang_pdf', compact('barang'));
+        return $pdf->download('barang.pdf');
     }
 }

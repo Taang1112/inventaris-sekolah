@@ -13,6 +13,8 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Data Kelas</h3>
         <a href="{{ route('kelas.create') }}" class="btn btn-primary">+ Tambah Kelas</a>
+    <a href="{{ route('kelas.export.excel') }}" class="btn btn-success">Export Excel</a>
+    <a href="{{ route('kelas.export.pdf') }}" class="btn btn-danger">Export PDF</a>
     </div>
 
     @if(session('success'))

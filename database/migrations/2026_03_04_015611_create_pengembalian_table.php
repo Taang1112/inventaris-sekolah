@@ -14,7 +14,10 @@ class CreatePengembalianTable extends Migration
     public function up()
     {
         Schema::create('pengembalian', function (Blueprint $table) {
-            $table->id();
+            $table->id('pengembalian_id');
+            $table->foreignId('peminjaman_id')->constrained('peminjaman', 'peminjaman_id')->onDelete('cascade');
+            $table->date('tanggal_kembali');
+            $table->enum('kondisi_kembali', ['baik', 'rusak']);
             $table->timestamps();
         });
     }

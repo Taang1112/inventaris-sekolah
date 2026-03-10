@@ -37,6 +37,10 @@
             border: none;
             cursor: pointer;
         }
+        .btn-success {
+            background: #27ae60;
+            color: #fff;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -74,6 +78,8 @@
     @endif
 
     <a href="{{ route('barang.create') }}" class="btn btn-primary">+ Tambah Barang</a>
+    <a href="{{ route('barang.export.excel') }}" class="btn btn-success">Export Excel</a>
+    <a href="{{ route('barang.export.pdf') }}" class="btn btn-danger">Export PDF</a>
 
     <table>
         <thead>

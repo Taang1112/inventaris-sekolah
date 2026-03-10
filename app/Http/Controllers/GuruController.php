@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use App\Exports\GuruExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class GuruController extends Controller
 {
@@ -61,5 +64,17 @@ class GuruController extends Controller
 
         return redirect()->route('guru.index')
                          ->with('success', 'Data guru berhasil dihapus');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new GuruExport, 'guru.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $guru = Guru::all();
+        $pdf = Pdf::loadView('exports.guru_pdf', compact('guru'));
+        return $pdf->download('guru.pdf');
     }
 }
