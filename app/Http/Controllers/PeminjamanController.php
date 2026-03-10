@@ -10,79 +10,92 @@ use App\Models\Barang;
 
 class PeminjamanController extends Controller
 {
+
     public function index()
     {
-        $data = Peminjaman::with(['guru','kelas','barang'])->get();
-        return view('peminjaman.index', compact('data'));
+        $peminjaman = Peminjaman::with(['guru','kelas','barang'])->get();
+
+        return view('peminjaman.index', compact('peminjaman'));
     }
+
 
     public function create()
     {
         $guru = Guru::all();
         $kelas = Kelas::all();
-        $barang = Barang::where('jumlah_tersedia', '>', 0)->get();
+        $barang = Barang::all();
 
         return view('peminjaman.create', compact('guru','kelas','barang'));
     }
 
+
     public function store(Request $request)
     {
+
         $request->validate([
             'guru_id' => 'required',
             'kelas_id' => 'required',
             'barang_id' => 'required',
-            'jumlah_pinjam' => 'required|integer|min:1',
-            'tanggal_pinjam' => 'required|date'
+            'jumlah_pinjam' => 'required|numeric'
         ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
+        $barang = Barang::find($request->barang_id);
 
-        if ($request->jumlah_pinjam > $barang->jumlah_tersedia) {
-            return back()->with('error', 'Stok tidak mencukupi!');
+        // cek stok
+        if($barang->stok < $request->jumlah_pinjam){
+            return redirect()->back()->with('error','Stok barang tidak cukup');
         }
 
-        // Kurangi stok
-        $barang->jumlah_tersedia -= $request->jumlah_pinjam;
-        $barang->save();
-
+        // simpan peminjaman
         Peminjaman::create([
             'guru_id' => $request->guru_id,
             'kelas_id' => $request->kelas_id,
             'barang_id' => $request->barang_id,
             'jumlah_pinjam' => $request->jumlah_pinjam,
-            'tanggal_pinjam' => $request->tanggal_pinjam,
+            'tanggal_pinjam' => now(),
             'status' => 'dipinjam'
         ]);
 
-        return redirect()->route('peminjaman.index')
-            ->with('success', 'Peminjaman berhasil ditambahkan');
+        // kurangi stok
+        $barang->stok -= $request->jumlah_pinjam;
+        $barang->save();
+
+        return redirect()->route('peminjaman.index')->with('success','Barang berhasil dipinjam');
     }
+
 
     public function kembalikan($id)
     {
-        $peminjaman = Peminjaman::findOrFail($id);
-        $barang = $peminjaman->barang;
 
-        // Tambah stok kembali
-        $barang->jumlah_tersedia += $peminjaman->jumlah_pinjam;
+        $peminjaman = Peminjaman::findOrFail($id);
+
+        if($peminjaman->status == 'dikembalikan'){
+            return redirect()->back()->with('error','Barang sudah dikembalikan');
+        }
+
+        $barang = Barang::find($peminjaman->barang_id);
+
+        // tambah stok kembali
+        $barang->stok += $peminjaman->jumlah_pinjam;
         $barang->save();
 
         $peminjaman->update([
-            'status' => 'dikembalikan',
-            'tanggal_kembali' => now()
+            'tanggal_kembali' => now(),
+            'status' => 'dikembalikan'
         ]);
 
-        return redirect()->route('peminjaman.index')
-            ->with('success', 'Barang berhasil dikembalikan');
+        return redirect()->route('peminjaman.index')->with('success','Barang berhasil dikembalikan');
     }
 
-    public function edit($id)
-{
-    $peminjaman = Peminjaman::findOrFail($id);
-    $guru = Guru::all();
-    $kelas = Kelas::all();
-    $barang = Barang::all();
 
-    return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
-}
+    public function edit($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $guru = Guru::all();
+        $kelas = Kelas::all();
+        $barang = Barang::all();
+
+        return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
+    }
+
 }

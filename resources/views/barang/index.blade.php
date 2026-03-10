@@ -39,6 +39,22 @@
         }
     }
 
+    /* Action Bar */
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .export-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
     /* Button Primary */
     .btn-primary {
         background: linear-gradient(145deg, #4f46e5, #7c3aed);
@@ -66,6 +82,51 @@
         font-size: 16px;
     }
 
+    /* Button Export */
+    .btn-excel {
+        background: linear-gradient(145deg, #10b981, #059669);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-excel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-pdf {
+        background: linear-gradient(145deg, #ef4444, #dc2626);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-pdf:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(239, 68, 68, 0.4);
+    }
+
     /* Table Premium */
     .table-container {
         background: white;
@@ -86,7 +147,7 @@
     }
 
     th {
-        padding: 20px 18px;
+        padding: 20px 24px;
         font-size: 13px;
         font-weight: 600;
         color: #475569;
@@ -97,10 +158,11 @@
     }
 
     td {
-        padding: 18px;
+        padding: 18px 24px;
         color: #1e293b;
         font-size: 14px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        vertical-align: middle;
     }
 
     tbody tr {
@@ -114,6 +176,18 @@
     }
 
     /* Badge */
+    .badge-no {
+        background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-family: 'Inter', monospace;
+        font-weight: 600;
+        font-size: 12px;
+        color: #475569;
+        display: inline-block;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    }
+
     .badge {
         padding: 6px 14px;
         border-radius: 40px;
@@ -210,18 +284,33 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+        .action-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .export-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .btn-excel, .btn-pdf {
+            flex: 1;
+            justify-content: center;
+        }
+        
         table {
             display: block;
             overflow-x: auto;
         }
         
-        .action-buttons {
-            flex-direction: column;
-        }
-        
         .btn-primary {
             width: 100%;
             justify-content: center;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
         }
     }
 </style>
@@ -235,10 +324,16 @@
         </div>
     @endif
 
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+    <div class="action-bar">
         <a href="{{ route('barang.create') }}" class="btn-primary">
             <i class="fas fa-plus"></i> Tambah Barang Baru
         </a>
+
+        <div class="export-buttons">
+            <a href="{{ route('barang.export') }}" class="btn-excel" target="_blank">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </a>
+        </div>
     </div>
 
     <div class="table-container">
@@ -257,7 +352,9 @@
             <tbody>
                 @forelse($barang as $item)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td>
+                        <span class="badge-no">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                    </td>
                     <td><strong>{{ $item->kode_barang }}</strong></td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->jumlah_total }}</td>
@@ -282,7 +379,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus barang ini?')">
-                                    <i class="fas fa-trash"></i> Hapus
+                                    <i class="fas fa-trash-alt"></i> Hapus
                                 </button>
                             </form>
                         </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use App\Exports\KelasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KelasController extends Controller
 {
@@ -39,6 +41,11 @@ class KelasController extends Controller
         $kelas->update($request->all());
         return redirect()->route('kelas.index');
     }
+
+    public function exportExcel()
+{
+    return Excel::download(new BarangExport, 'barang.xlsx');
+}
 
     public function destroy($id)
     {

@@ -39,6 +39,22 @@
         }
     }
 
+    /* Action Bar */
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .export-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
     /* Button Primary */
     .btn-primary {
         background: linear-gradient(145deg, #4f46e5, #7c3aed);
@@ -64,6 +80,51 @@
 
     .btn-primary i {
         font-size: 16px;
+    }
+
+    /* Button Export */
+    .btn-excel {
+        background: linear-gradient(145deg, #10b981, #059669);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-excel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-pdf {
+        background: linear-gradient(145deg, #ef4444, #dc2626);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-pdf:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(239, 68, 68, 0.4);
     }
 
     /* Table Premium */
@@ -115,9 +176,9 @@
     }
 
     /* Badge ID */
-    .badge-id {
+    .badge-no {
         background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
-        padding: 6px 12px;
+        padding: 6px 14px;
         border-radius: 30px;
         font-family: 'Inter', monospace;
         font-weight: 600;
@@ -127,12 +188,22 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
     }
 
+    .nip-text {
+        color: #64748b;
+        font-family: 'Inter', monospace;
+        font-size: 13px;
+        background: #f1f5f9;
+        padding: 4px 10px;
+        border-radius: 30px;
+        display: inline-block;
+    }
+
     /* Action Buttons */
     .action-btns {
         display: flex;
         gap: 8px;
         align-items: center;
-        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 
     .btn-icon {
@@ -198,19 +269,23 @@
         margin-bottom: 20px;
     }
 
-    /* NIP style */
-    .nip-text {
-        color: #64748b;
-        font-family: 'Inter', monospace;
-        font-size: 13px;
-        background: #f1f5f9;
-        padding: 4px 10px;
-        border-radius: 30px;
-        display: inline-block;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
+        .action-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .export-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .btn-excel, .btn-pdf {
+            flex: 1;
+            justify-content: center;
+        }
+        
         table {
             display: block;
             overflow-x: auto;
@@ -219,10 +294,6 @@
         .btn-primary {
             width: 100%;
             justify-content: center;
-        }
-        
-        th, td {
-            padding: 15px 16px;
         }
         
         .action-btns {
@@ -240,10 +311,16 @@
         </div>
     @endif
 
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+    <div class="action-bar">
         <a href="{{ route('guru.create') }}" class="btn-primary">
             <i class="fas fa-plus"></i> Tambah Guru Baru
         </a>
+
+        <div class="export-buttons">
+            <a href="{{ route('guru.export') }}" class="btn-excel" target="_blank">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </a>
+        </div>
     </div>
 
     <div class="table-container">
@@ -261,7 +338,7 @@
                 @forelse($guru as $item)
                 <tr>
                     <td>
-                        <span class="badge-id">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                        <span class="badge-no">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                     </td>
                     <td style="font-weight: 600;">{{ $item->nama_guru }}</td>
                     <td>

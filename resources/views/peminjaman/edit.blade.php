@@ -108,6 +108,13 @@
         border-color: #94a3b8;
     }
 
+    /* Readonly input */
+    input[readonly] {
+        background: #f1f5f9;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
     /* Select Styling */
     select {
         appearance: none;
@@ -128,18 +135,18 @@
         gap: 5px;
     }
 
-    .status-info {
+    .status-badge {
         display: inline-block;
         padding: 4px 12px;
         border-radius: 30px;
         font-size: 11px;
         font-weight: 600;
+        color: white;
         margin-left: 10px;
     }
 
     .status-dipinjam {
         background: linear-gradient(145deg, #f97316, #ea580c);
-        color: white;
     }
 
     /* Form Actions */
@@ -281,10 +288,13 @@
 
         <div class="info-card">
             <i class="fas fa-edit"></i>
-            <p>Anda sedang mengedit peminjaman oleh <strong>{{ $peminjaman->guru->nama_guru ?? '-' }}</strong> untuk barang <strong>{{ $peminjaman->barang->nama_barang ?? '-' }}</strong></p>
-            @if($peminjaman->status == 'dipinjam')
-                <span class="status-info status-dipinjam"><i class="fas fa-clock"></i> Status: Dipinjam</span>
-            @endif
+            <p>
+                Anda sedang mengedit peminjaman oleh <strong>{{ $peminjaman->guru->nama_guru ?? '-' }}</strong> 
+                untuk barang <strong>{{ $peminjaman->barang->nama_barang ?? '-' }}</strong>
+                @if($peminjaman->status == 'dipinjam')
+                    <span class="status-badge status-dipinjam"><i class="fas fa-clock"></i> Status: Dipinjam</span>
+                @endif
+            </p>
         </div>
 
         <form action="{{ route('peminjaman.update', $peminjaman->peminjaman_id) }}" method="POST">
@@ -300,7 +310,7 @@
                         @foreach($guru as $g)
                             <option value="{{ $g->guru_id }}" 
                                 {{ old('guru_id', $peminjaman->guru_id) == $g->guru_id ? 'selected' : '' }}>
-                                {{ $g->nama_guru }} ({{ $g->nip }})
+                                {{ $g->nama_guru }} (NIP: {{ $g->nip }})
                             </option>
                         @endforeach
                     </select>
@@ -316,7 +326,10 @@
                         @foreach($kelas as $k)
                             <option value="{{ $k->kelas_id }}" 
                                 {{ old('kelas_id', $peminjaman->kelas_id) == $k->kelas_id ? 'selected' : '' }}>
-                                {{ $k->nama_kelas }} (Wali: {{ $k->guru->nama_guru ?? '-' }})
+                                {{ $k->nama_kelas }}
+                                @if($k->guru)
+                                    (Wali: {{ $k->guru->nama_guru }})
+                                @endif
                             </option>
                         @endforeach
                     </select>
@@ -333,13 +346,13 @@
                             <option value="{{ $b->barang_id }}" 
                                     data-stok="{{ $b->jumlah_tersedia + ($b->barang_id == $peminjaman->barang_id ? $peminjaman->jumlah_pinjam : 0) }}"
                                     {{ old('barang_id', $peminjaman->barang_id) == $b->barang_id ? 'selected' : '' }}>
-                                {{ $b->nama_barang }} (Stok: {{ $b->jumlah_tersedia }})
+                                {{ $b->nama_barang }} (Kode: {{ $b->kode_barang }} - Stok: {{ $b->jumlah_tersedia }})
                             </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="helper-text" id="stockInfo">
-                    <i class="fas fa-info-circle"></i> Stok termasuk barang yang sedang dipinjam
+                    <i class="fas fa-info-circle"></i> Pilih barang untuk melihat stok tersedia
                 </div>
             </div>
 
@@ -350,15 +363,18 @@
                     <input type="number" name="jumlah_pinjam" id="jumlahPinjam" min="1" value="{{ old('jumlah_pinjam', $peminjaman->jumlah_pinjam) }}" required>
                 </div>
                 <div class="helper-text">
-                    <i class="fas fa-info-circle"></i> Jumlah pinjam saat ini: {{ $peminjaman->jumlah_pinjam }}
+                    <i class="fas fa-info-circle"></i> Jumlah pinjam saat ini: <strong>{{ $peminjaman->jumlah_pinjam }}</strong>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Tanggal Pinjam <span style="color: #ef4444;">*</span></label>
+                <label>Tanggal Pinjam</label>
                 <div class="input-wrapper">
                     <i class="fas fa-calendar-alt input-icon"></i>
-                    <input type="date" name="tanggal_pinjam" value="{{ old('tanggal_pinjam', $peminjaman->tanggal_pinjam) }}" required>
+                    <input type="text" value="{{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d/m/Y H:i') }} WIB" readonly>
+                </div>
+                <div class="helper-text">
+                    <i class="fas fa-info-circle"></i> Tanggal pinjam tidak dapat diubah
                 </div>
             </div>
 
