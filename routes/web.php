@@ -83,12 +83,21 @@ Route::middleware(['auth','role:admin'])->group(function () {
 
 
 // =====================
-// USER
+// PEMINJAMAN (ADMIN + USER BISA LIHAT)
+// =====================
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+
+});
+
+
+// =====================
+// PEMINJAMAN KHUSUS USER
 // =====================
 
 Route::middleware(['auth','role:user'])->group(function () {
-
-    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 
     Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
 
