@@ -7,6 +7,8 @@ use App\Models\Peminjaman;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Barang;
+use Illuminate\Support\Facades\Mail; // tambahan
+use App\Mail\PeminjamanMail; // tambahan
 
 class PeminjamanController extends Controller
 {
@@ -52,6 +54,13 @@ class PeminjamanController extends Controller
             'status' => 'dipinjam'
         ]);
 
+        // =========================
+        // KIRIM EMAIL NOTIFIKASI
+        // =========================
+        Mail::to('admin@gmail.com')->send(new PeminjamanMail($peminjaman));
+
+        return redirect()->route('peminjaman.index')
+            ->with('success', 'Peminjaman berhasil ditambahkan');
         $barang->jumlah_tersedia -= $request->jumlah_pinjam;
         $barang->save();
 
@@ -88,6 +97,9 @@ class PeminjamanController extends Controller
         $guru = Guru::all();
         $kelas = Kelas::all();
         $barang = Barang::all();
+
+        return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
+    }
 
         return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
     }
