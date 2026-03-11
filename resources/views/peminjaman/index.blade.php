@@ -425,19 +425,23 @@
     @endif
 
     <div class="action-bar">
-        <a href="{{ route('peminjaman.create') }}" class="btn-primary">
-            <i class="fas fa-plus"></i> Tambah Peminjaman
-        </a>
 
-        <div class="export-buttons">
-            <a href="{{ route('peminjaman.export') }}" class="btn-excel" target="_blank">
-                <i class="fas fa-file-excel"></i> Export Excel
-            </a>
-            <a href="{{ route('export.pdf') }}?type=peminjaman" class="btn-pdf" target="_blank">
-                <i class="fas fa-file-pdf"></i> Export PDF
-            </a>
-        </div>
+    @if(auth()->user()->hasRole('user'))
+    <a href="{{ route('peminjaman.create') }}" class="btn-primary">
+        <i class="fas fa-plus"></i> Tambah Peminjaman
+    </a>
+   @endif
+
+    <div class="export-buttons">
+        <a href="{{ route('peminjaman.export') }}" class="btn-excel" target="_blank">
+            <i class="fas fa-file-excel"></i> Export Excel
+        </a>
+        <a href="{{ route('export.pdf') }}?type=peminjaman" class="btn-pdf" target="_blank">
+            <i class="fas fa-file-pdf"></i> Export PDF
+        </a>
     </div>
+
+</div>
 
     <div class="table-container">
         <div class="table-responsive">
@@ -539,6 +543,7 @@
                             @endif
                         </td>
                         <td>
+                           @if(auth()->user()->hasRole('user'))
                             <div class="action-btns">
                                 @if($p->status == 'dipinjam')
                                     <a href="{{ route('peminjaman.edit', $p->peminjaman_id) }}" class="btn-action btn-edit" title="Edit Peminjaman">
@@ -556,6 +561,7 @@
                                     </span>
                                 @endif
                             </div>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -564,9 +570,11 @@
                             <div class="empty-state">
                                 <i class="fas fa-book"></i>
                                 <p>Belum ada data peminjaman</p>
+                               @if(auth()->user()->hasRole('user'))
                                 <a href="{{ route('peminjaman.create') }}" class="btn-primary">
                                     <i class="fas fa-plus"></i> Tambah Peminjaman Pertama
                                 </a>
+                                @endif
                             </div>
                         </td>
                     </tr>
