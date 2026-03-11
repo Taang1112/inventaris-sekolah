@@ -10,17 +10,17 @@ class GoogleAuthController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->redirect();
+        // harus stateless juga
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callbackGoogle()
     {
         try {
 
-            // stateless supaya OAuth tidak ribut soal session di localhost
             $googleUser = Socialite::driver('google')->stateless()->user();
 
-            // cari user berdasarkan email
+            // cari user
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if (!$user) {
@@ -34,6 +34,7 @@ class GoogleAuthController extends Controller
 
             } else {
 
+                // kalau user sudah ada tapi belum punya google_id
                 if (!$user->google_id) {
                     $user->google_id = $googleUser->getId();
                     $user->save();
@@ -41,16 +42,15 @@ class GoogleAuthController extends Controller
 
             }
 
-            // login user
-            Auth::login($user, true);
+            // login
+            Auth::login($user);
 
-            // redirect ke dashboard
-            return redirect('/dashboard');
+            return redirect()->intended('/dashboard');
 
         } catch (\Exception $e) {
 
-            // tampilkan error asli supaya kelihatan kalau ada yang rusak
-            dd($e->getMessage());
+            return redirect('/login')->with('error','Login Google gagal');
+
         }
     }
 }

@@ -322,7 +322,8 @@
                             <option value="{{ $b->barang_id }}" 
                                     data-stok="{{ $b->jumlah_tersedia }}"
                                     {{ old('barang_id') == $b->barang_id ? 'selected' : '' }}>
-                                {{ $b->nama_barang }} (Kode: {{ $b->kode_barang }} - Stok: {{ $b->jumlah_tersedia }})
+                                {{ $b->nama_barang }} 
+                                (Kode: {{ $b->kode_barang }} - Stok: {{ $b->jumlah_tersedia }})
                             </option>
                         @endforeach
                     </select>
