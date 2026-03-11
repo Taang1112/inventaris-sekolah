@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use App\Exports\GuruExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GuruController extends Controller
 {
@@ -53,6 +55,11 @@ class GuruController extends Controller
         return redirect()->route('guru.index')
                          ->with('success', 'Data guru berhasil diupdate');
     }
+
+public function exportExcel()
+{
+    return Excel::download(new BarangExport, 'barang.xlsx');
+}
 
     public function destroy($id)
     {

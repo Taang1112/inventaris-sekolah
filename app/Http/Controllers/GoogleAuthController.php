@@ -10,38 +10,39 @@ class GoogleAuthController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->redirect();
+        // harus stateless juga
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callbackGoogle()
     {
         try {
 
-            $google_user = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
-            // cek apakah user sudah ada berdasarkan email
-            $user = User::where('email', $google_user->getEmail())->first();
+            // cari user
+            $user = User::where('email', $googleUser->getEmail())->first();
 
             if (!$user) {
 
-                // jika belum ada → buat user baru
                 $user = User::create([
-                    'name' => $google_user->getName(),
-                    'email' => $google_user->getEmail(),
-                    'google_id' => $google_user->getId(),
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
                     'password' => bcrypt('google-login')
                 ]);
 
             } else {
 
-                // jika user ada tapi belum punya google_id
+                // kalau user sudah ada tapi belum punya google_id
                 if (!$user->google_id) {
-                    $user->google_id = $google_user->getId();
+                    $user->google_id = $googleUser->getId();
                     $user->save();
                 }
 
             }
 
+            // login
             Auth::login($user);
 
             return redirect()->intended('/dashboard');

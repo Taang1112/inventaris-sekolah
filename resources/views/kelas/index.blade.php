@@ -39,6 +39,22 @@
         }
     }
 
+    /* Action Bar */
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .export-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
     /* Button Primary */
     .btn-primary {
         background: linear-gradient(145deg, #4f46e5, #7c3aed);
@@ -64,6 +80,51 @@
 
     .btn-primary i {
         font-size: 16px;
+    }
+
+    /* Button Export */
+    .btn-excel {
+        background: linear-gradient(145deg, #10b981, #059669);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-excel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-pdf {
+        background: linear-gradient(145deg, #ef4444, #dc2626);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-pdf:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(239, 68, 68, 0.4);
     }
 
     /* Table Premium */
@@ -168,6 +229,7 @@
         display: flex;
         gap: 8px;
         align-items: center;
+        flex-wrap: wrap;
         justify-content: flex-end;
     }
 
@@ -236,6 +298,21 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+        .action-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .export-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .btn-excel, .btn-pdf {
+            flex: 1;
+            justify-content: center;
+        }
+        
         table {
             display: block;
             overflow-x: auto;
@@ -244,10 +321,6 @@
         .btn-primary {
             width: 100%;
             justify-content: center;
-        }
-        
-        th, td {
-            padding: 15px 16px;
         }
         
         .action-btns {
@@ -270,10 +343,16 @@
         </div>
     @endif
 
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+    <div class="action-bar">
         <a href="{{ route('kelas.create') }}" class="btn-primary">
             <i class="fas fa-plus"></i> Tambah Kelas Baru
         </a>
+
+        <div class="export-buttons">
+            <a href="{{ route('kelas.export') }}" class="btn-excel" target="_blank">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </a>
+        </div>
     </div>
 
     <div class="table-container">

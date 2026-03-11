@@ -287,7 +287,7 @@
                         <option value="">-- Pilih Guru --</option>
                         @foreach($guru as $g)
                             <option value="{{ $g->guru_id }}" {{ old('guru_id') == $g->guru_id ? 'selected' : '' }}>
-                                {{ $g->nama_guru }} ({{ $g->nip }})
+                                {{ $g->nama_guru }} (NIP: {{ $g->nip }})
                             </option>
                         @endforeach
                     </select>
@@ -302,7 +302,10 @@
                         <option value="">-- Pilih Kelas --</option>
                         @foreach($kelas as $k)
                             <option value="{{ $k->kelas_id }}" {{ old('kelas_id') == $k->kelas_id ? 'selected' : '' }}>
-                                {{ $k->nama_kelas }} (Wali: {{ $k->guru->nama_guru ?? '-' }})
+                                {{ $k->nama_kelas }} 
+                                @if($k->guru)
+                                    (Wali: {{ $k->guru->nama_guru }})
+                                @endif
                             </option>
                         @endforeach
                     </select>
@@ -319,7 +322,8 @@
                             <option value="{{ $b->barang_id }}" 
                                     data-stok="{{ $b->jumlah_tersedia }}"
                                     {{ old('barang_id') == $b->barang_id ? 'selected' : '' }}>
-                                {{ $b->nama_barang }} (Stok: {{ $b->jumlah_tersedia }})
+                                {{ $b->nama_barang }} 
+                                (Kode: {{ $b->kode_barang }} - Stok: {{ $b->jumlah_tersedia }})
                             </option>
                         @endforeach
                     </select>
@@ -336,15 +340,7 @@
                     <input type="number" name="jumlah_pinjam" id="jumlahPinjam" min="1" value="{{ old('jumlah_pinjam') }}" required>
                 </div>
                 <div class="helper-text">
-                    <i class="fas fa-info-circle"></i> Maksimal stok tersedia
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Tanggal Pinjam <span style="color: #ef4444;">*</span></label>
-                <div class="input-wrapper">
-                    <i class="fas fa-calendar-alt input-icon"></i>
-                    <input type="date" name="tanggal_pinjam" value="{{ old('tanggal_pinjam', date('Y-m-d')) }}" required>
+                    <i class="fas fa-info-circle"></i> Maksimal stok tersedia: <span id="maxStock">-</span>
                 </div>
             </div>
 
@@ -365,13 +361,18 @@
             const stok = selected.dataset.stok;
             const stockInfo = document.getElementById('stockInfo');
             const jumlahInput = document.getElementById('jumlahPinjam');
+            const maxStockSpan = document.getElementById('maxStock');
             
             if (stok) {
                 stockInfo.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Stok tersedia: <strong>${stok}</strong> barang`;
                 jumlahInput.max = stok;
+                maxStockSpan.innerText = stok;
+                maxStockSpan.style.color = '#4f46e5';
+                maxStockSpan.style.fontWeight = '600';
             } else {
                 stockInfo.innerHTML = `<i class="fas fa-info-circle"></i> Pilih barang untuk melihat stok tersedia`;
                 jumlahInput.max = '';
+                maxStockSpan.innerText = '-';
             }
         });
 

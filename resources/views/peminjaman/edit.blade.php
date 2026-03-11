@@ -117,6 +117,13 @@
         background-size: 16px;
     }
 
+    /* Readonly input */
+    input[readonly] {
+        background: #f1f5f9;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
     /* Helper Text */
     .helper-text {
         font-size: 12px;
@@ -126,20 +133,6 @@
         display: flex;
         align-items: center;
         gap: 5px;
-    }
-
-    .status-info {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 30px;
-        font-size: 11px;
-        font-weight: 600;
-        margin-left: 10px;
-    }
-
-    .status-dipinjam {
-        background: linear-gradient(145deg, #f97316, #ea580c);
-        color: white;
     }
 
     /* Form Actions */
@@ -233,6 +226,25 @@
         color: #4f46e5;
     }
 
+    /* Status Badge */
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+        color: white;
+        margin-left: 10px;
+    }
+
+    .status-dipinjam {
+        background: linear-gradient(145deg, #f97316, #ea580c);
+    }
+
+    .status-dikembalikan {
+        background: linear-gradient(145deg, #10b981, #059669);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .form-container {
@@ -281,10 +293,15 @@
 
         <div class="info-card">
             <i class="fas fa-edit"></i>
-            <p>Anda sedang mengedit peminjaman oleh <strong>{{ $peminjaman->guru->nama_guru ?? '-' }}</strong> untuk barang <strong>{{ $peminjaman->barang->nama_barang ?? '-' }}</strong></p>
-            @if($peminjaman->status == 'dipinjam')
-                <span class="status-info status-dipinjam"><i class="fas fa-clock"></i> Status: Dipinjam</span>
-            @endif
+            <p>
+                Anda sedang mengedit peminjaman oleh <strong>{{ $peminjaman->guru->nama_guru ?? '-' }}</strong> 
+                untuk barang <strong>{{ $peminjaman->barang->nama_barang ?? '-' }}</strong>
+                @if($peminjaman->status == 'dipinjam')
+                    <span class="status-badge status-dipinjam"><i class="fas fa-clock"></i> Dipinjam</span>
+                @else
+                    <span class="status-badge status-dikembalikan"><i class="fas fa-check-circle"></i> Dikembalikan</span>
+                @endif
+            </p>
         </div>
 
         <form action="{{ route('peminjaman.update', $peminjaman->peminjaman_id) }}" method="POST">
@@ -295,84 +312,128 @@
                 <label>Guru <span style="color: #ef4444;">*</span></label>
                 <div class="input-wrapper">
                     <i class="fas fa-chalkboard-teacher input-icon"></i>
-                    <select name="guru_id" required>
+                    <select name="guru_id" required {{ $peminjaman->status == 'dikembalikan' ? 'disabled' : '' }}>
                         <option value="">-- Pilih Guru --</option>
                         @foreach($guru as $g)
                             <option value="{{ $g->guru_id }}" 
                                 {{ old('guru_id', $peminjaman->guru_id) == $g->guru_id ? 'selected' : '' }}>
-                                {{ $g->nama_guru }} ({{ $g->nip }})
+                                {{ $g->nama_guru }} (NIP: {{ $g->nip }})
                             </option>
                         @endforeach
                     </select>
                 </div>
+                @if($peminjaman->status == 'dikembalikan')
+                    <div class="helper-text">
+                        <i class="fas fa-info-circle" style="color: #ef4444;"></i> Guru tidak dapat diubah karena peminjaman sudah dikembalikan
+                    </div>
+                @endif
             </div>
 
             <div class="form-group">
                 <label>Kelas <span style="color: #ef4444;">*</span></label>
                 <div class="input-wrapper">
                     <i class="fas fa-door-open input-icon"></i>
-                    <select name="kelas_id" required>
+                    <select name="kelas_id" required {{ $peminjaman->status == 'dikembalikan' ? 'disabled' : '' }}>
                         <option value="">-- Pilih Kelas --</option>
                         @foreach($kelas as $k)
                             <option value="{{ $k->kelas_id }}" 
                                 {{ old('kelas_id', $peminjaman->kelas_id) == $k->kelas_id ? 'selected' : '' }}>
-                                {{ $k->nama_kelas }} (Wali: {{ $k->guru->nama_guru ?? '-' }})
+                                {{ $k->nama_kelas }}
+                                @if($k->guru)
+                                    (Wali: {{ $k->guru->nama_guru }})
+                                @endif
                             </option>
                         @endforeach
                     </select>
                 </div>
+                @if($peminjaman->status == 'dikembalikan')
+                    <div class="helper-text">
+                        <i class="fas fa-info-circle" style="color: #ef4444;"></i> Kelas tidak dapat diubah karena peminjaman sudah dikembalikan
+                    </div>
+                @endif
             </div>
 
             <div class="form-group">
                 <label>Barang <span style="color: #ef4444;">*</span></label>
                 <div class="input-wrapper">
                     <i class="fas fa-box input-icon"></i>
-                    <select name="barang_id" id="barangSelect" required>
+                    <select name="barang_id" id="barangSelect" required {{ $peminjaman->status == 'dikembalikan' ? 'disabled' : '' }}>
                         <option value="">-- Pilih Barang --</option>
                         @foreach($barang as $b)
                             <option value="{{ $b->barang_id }}" 
                                     data-stok="{{ $b->jumlah_tersedia + ($b->barang_id == $peminjaman->barang_id ? $peminjaman->jumlah_pinjam : 0) }}"
                                     {{ old('barang_id', $peminjaman->barang_id) == $b->barang_id ? 'selected' : '' }}>
-                                {{ $b->nama_barang }} (Stok: {{ $b->jumlah_tersedia }})
+                                {{ $b->nama_barang }} (Kode: {{ $b->kode_barang }} - Stok: {{ $b->jumlah_tersedia }})
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="helper-text" id="stockInfo">
-                    <i class="fas fa-info-circle"></i> Stok termasuk barang yang sedang dipinjam
-                </div>
+                @if($peminjaman->status == 'dipinjam')
+                    <div class="helper-text" id="stockInfo">
+                        <i class="fas fa-info-circle"></i> Pilih barang untuk melihat stok tersedia
+                    </div>
+                @else
+                    <div class="helper-text">
+                        <i class="fas fa-info-circle" style="color: #ef4444;"></i> Barang tidak dapat diubah karena peminjaman sudah dikembalikan
+                    </div>
+                @endif
             </div>
 
             <div class="form-group">
                 <label>Jumlah Pinjam <span style="color: #ef4444;">*</span></label>
                 <div class="input-wrapper">
                     <i class="fas fa-calculator input-icon"></i>
-                    <input type="number" name="jumlah_pinjam" id="jumlahPinjam" min="1" value="{{ old('jumlah_pinjam', $peminjaman->jumlah_pinjam) }}" required>
+                    <input type="number" name="jumlah_pinjam" id="jumlahPinjam" min="1" 
+                           value="{{ old('jumlah_pinjam', $peminjaman->jumlah_pinjam) }}" 
+                           required {{ $peminjaman->status == 'dikembalikan' ? 'readonly' : '' }}>
                 </div>
-                <div class="helper-text">
-                    <i class="fas fa-info-circle"></i> Jumlah pinjam saat ini: {{ $peminjaman->jumlah_pinjam }}
-                </div>
+                @if($peminjaman->status == 'dipinjam')
+                    <div class="helper-text">
+                        <i class="fas fa-info-circle"></i> Jumlah pinjam saat ini: <strong>{{ $peminjaman->jumlah_pinjam }}</strong>
+                    </div>
+                @else
+                    <div class="helper-text">
+                        <i class="fas fa-info-circle" style="color: #ef4444;"></i> Jumlah tidak dapat diubah karena peminjaman sudah dikembalikan
+                    </div>
+                @endif
             </div>
 
             <div class="form-group">
-                <label>Tanggal Pinjam <span style="color: #ef4444;">*</span></label>
+                <label>Tanggal Pinjam</label>
                 <div class="input-wrapper">
                     <i class="fas fa-calendar-alt input-icon"></i>
-                    <input type="date" name="tanggal_pinjam" value="{{ old('tanggal_pinjam', $peminjaman->tanggal_pinjam) }}" required>
+                    <input type="text" value="{{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d/m/Y H:i') }}" readonly>
                 </div>
             </div>
 
+            @if($peminjaman->tanggal_kembali)
+            <div class="form-group">
+                <label>Tanggal Kembali</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-calendar-check input-icon"></i>
+                    <input type="text" value="{{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d/m/Y H:i') }}" readonly>
+                </div>
+            </div>
+            @endif
+
             <div class="form-actions">
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-save"></i> Update Peminjaman
-                </button>
+                @if($peminjaman->status == 'dipinjam')
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Update Peminjaman
+                    </button>
+                @else
+                    <button type="button" class="btn-primary" style="opacity: 0.7; cursor: not-allowed;" disabled>
+                        <i class="fas fa-lock"></i> Tidak Dapat Diubah
+                    </button>
+                @endif
                 <a href="{{ route('peminjaman.index') }}" class="btn-secondary">
-                    <i class="fas fa-times"></i> Batal
+                    <i class="fas fa-times"></i> Kembali
                 </a>
             </div>
         </form>
     </div>
 
+    @if($peminjaman->status == 'dipinjam')
     <script>
         document.getElementById('barangSelect')?.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];
@@ -395,4 +456,5 @@
             document.getElementById('barangSelect')?.dispatchEvent(event);
         });
     </script>
+    @endif
 @endsection
