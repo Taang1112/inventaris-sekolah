@@ -7,6 +7,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\GoogleAuthController;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -91,4 +92,13 @@ Route::get('/peminjaman/{id}/kembalikan', [PeminjamanController::class, 'kembali
 
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
+
+Route::get('/test-mail', function () {
+    Mail::raw('Test email dari Laravel', function ($message) {
+        $message->to('test@gmail.com')
+                ->subject('Test Mail');
+    });
+
+    return 'Email terkirim';
+});
 require __DIR__.'/auth.php';
