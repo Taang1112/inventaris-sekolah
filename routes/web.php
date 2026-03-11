@@ -80,12 +80,19 @@ Route::middleware(['auth','role:admin'])->group(function () {
 
 Route::middleware(['auth','role:user'])->group(function () {
 
+   Route::middleware(['auth','role:user'])->group(function () {
+
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
     Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
     Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
     Route::get('/peminjaman/{id}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
+
+    Route::put('/peminjaman/{id}', [PeminjamanController::class, 'update'])->name('peminjaman.update');
+
     Route::get('/peminjaman/{id}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
 
     Route::get('/peminjaman/export', [PeminjamanController::class,'exportExcel'])->name('peminjaman.export');
+
+});
 
 });

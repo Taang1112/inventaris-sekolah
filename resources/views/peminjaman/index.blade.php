@@ -156,9 +156,14 @@
         margin-top: 20px;
     }
 
+    .table-responsive {
+        overflow-x: auto;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 1200px;
     }
 
     thead tr {
@@ -299,11 +304,7 @@
     .tanggal-item i {
         color: #4f46e5;
         font-size: 10px;
-    }
-
-    .tanggal-label {
-        color: #64748b;
-        min-width: 45px;
+        width: 14px;
     }
 
     /* Action Buttons */
@@ -356,6 +357,13 @@
         opacity: 0.7;
     }
 
+    /* Jumlah Pinjam */
+    .jumlah-pinjam {
+        font-weight: 700;
+        color: #4f46e5;
+        font-size: 16px;
+    }
+
     /* Empty State */
     .empty-state {
         text-align: center;
@@ -376,20 +384,8 @@
         margin-bottom: 20px;
     }
 
-    /* Jumlah Pinjam */
-    .jumlah-pinjam {
-        font-weight: 700;
-        color: #4f46e5;
-        font-size: 16px;
-    }
-
     /* Responsive */
-    @media (max-width: 1200px) {
-        table {
-            display: block;
-            overflow-x: auto;
-        }
-        
+    @media (max-width: 768px) {
         .action-bar {
             flex-direction: column;
             align-items: flex-start;
@@ -405,23 +401,9 @@
             justify-content: center;
         }
         
-        .action-btns {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .info-relasi {
-            min-width: 160px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        th, td {
-            padding: 12px 10px;
-        }
-        
-        .tanggal-info {
-            min-width: 120px;
+        .btn-primary {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>
@@ -458,137 +440,139 @@
     </div>
 
     <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 5%;">No</th>
-                    <th style="width: 15%;">Guru</th>
-                    <th style="width: 12%;">Kelas</th>
-                    <th style="width: 15%;">Barang</th>
-                    <th style="width: 7%;">Jumlah</th>
-                    <th style="width: 18%;">Tanggal Pinjam</th>
-                    <th style="width: 18%;">Tanggal Kembali</th>
-                    <th style="width: 10%;">Status</th>
-                    <th style="width: 15%;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($peminjaman as $index => $p)
-                <tr>
-                    <td>
-                        <span class="badge-no">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                    </td>
-                    <td>
-                        <div class="info-relasi">
-                            <div class="info-avatar avatar-guru">
-                                {{ substr($p->guru->nama_guru ?? '?', 0, 1) }}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Guru</th>
+                        <th>Kelas</th>
+                        <th>Barang</th>
+                        <th>Jumlah</th>
+                        <th>Tanggal Pinjam</th>
+                        <th>Tanggal Kembali</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($peminjaman as $index => $p)
+                    <tr>
+                        <td>
+                            <span class="badge-no">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                        </td>
+                        <td>
+                            <div class="info-relasi">
+                                <div class="info-avatar avatar-guru">
+                                    {{ substr($p->guru->nama_guru ?? '?', 0, 1) }}
+                                </div>
+                                <div class="info-details">
+                                    <span class="info-name">{{ $p->guru->nama_guru ?? '-' }}</span>
+                                    <span class="info-label">NIP: {{ $p->guru->nip ?? '-' }}</span>
+                                </div>
                             </div>
-                            <div class="info-details">
-                                <span class="info-name">{{ $p->guru->nama_guru ?? '-' }}</span>
-                                <span class="info-label">NIP: {{ $p->guru->nip ?? '-' }}</span>
+                        </td>
+                        <td>
+                            <div class="info-relasi">
+                                <div class="info-avatar avatar-kelas">
+                                    {{ substr($p->kelas->nama_kelas ?? '?', 0, 1) }}
+                                </div>
+                                <div class="info-details">
+                                    <span class="info-name">{{ $p->kelas->nama_kelas ?? '-' }}</span>
+                                    @if($p->kelas && $p->kelas->guru)
+                                    <span class="info-label">Wali: {{ $p->kelas->guru->nama_guru ?? '-' }}</span>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="info-relasi">
-                            <div class="info-avatar avatar-kelas">
-                                {{ substr($p->kelas->nama_kelas ?? '?', 0, 1) }}
+                        </td>
+                        <td>
+                            <div class="info-relasi">
+                                <div class="info-avatar avatar-barang">
+                                    {{ substr($p->barang->nama_barang ?? '?', 0, 1) }}
+                                </div>
+                                <div class="info-details">
+                                    <span class="info-name">{{ $p->barang->nama_barang ?? '-' }}</span>
+                                    <span class="info-label">{{ $p->barang->kode_barang ?? '-' }}</span>
+                                </div>
                             </div>
-                            <div class="info-details">
-                                <span class="info-name">{{ $p->kelas->nama_kelas ?? '-' }}</span>
-                                @if($p->kelas && $p->kelas->guru)
-                                <span class="info-label">Wali: {{ $p->kelas->guru->nama_guru ?? '-' }}</span>
-                                @endif
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="info-relasi">
-                            <div class="info-avatar avatar-barang">
-                                {{ substr($p->barang->nama_barang ?? '?', 0, 1) }}
-                            </div>
-                            <div class="info-details">
-                                <span class="info-name">{{ $p->barang->nama_barang ?? '-' }}</span>
-                                <span class="info-label">{{ $p->barang->kode_barang ?? '-' }}</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="jumlah-pinjam">{{ $p->jumlah_pinjam }}</span>
-                    </td>
-                    <td>
-                        <div class="tanggal-info">
-                            <div class="tanggal-item">
-                                <i class="fas fa-calendar-day"></i>
-                                <span>{{ \Carbon\Carbon::parse($p->tanggal_pinjam)->format('d/m/Y') }}</span>
-                            </div>
-                            <div class="tanggal-item">
-                                <i class="fas fa-clock"></i>
-                                <span>{{ \Carbon\Carbon::parse($p->tanggal_pinjam)->format('H:i') }} WIB</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        @if($p->tanggal_kembali)
+                        </td>
+                        <td>
+                            <span class="jumlah-pinjam">{{ $p->jumlah_pinjam }}</span>
+                        </td>
+                        <td>
                             <div class="tanggal-info">
                                 <div class="tanggal-item">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span>{{ \Carbon\Carbon::parse($p->tanggal_kembali)->format('d/m/Y') }}</span>
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>{{ \Carbon\Carbon::parse($p->tanggal_pinjam)->format('d/m/Y') }}</span>
                                 </div>
                                 <div class="tanggal-item">
                                     <i class="fas fa-clock"></i>
-                                    <span>{{ \Carbon\Carbon::parse($p->tanggal_kembali)->format('H:i') }} WIB</span>
+                                    <span>{{ \Carbon\Carbon::parse($p->tanggal_pinjam)->format('H:i') }}</span>
                                 </div>
                             </div>
-                        @else
-                            <span style="color: #94a3b8; font-style: italic;">-</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($p->status == 'dipinjam')
-                            <span class="status-badge status-dipinjam">
-                                <i class="fas fa-clock"></i> Dipinjam
-                            </span>
-                        @else
-                            <span class="status-badge status-dikembalikan">
-                                <i class="fas fa-check-circle"></i> Dikembalikan
-                            </span>
-                        @endif
-                    </td>
-                    <td>
-                        <div class="action-btns">
-                            @if($p->status == 'dipinjam')
-                                <a href="{{ route('peminjaman.edit', $p->peminjaman_id) }}" class="btn-action btn-edit" title="Edit Peminjaman">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <a href="{{ route('peminjaman.kembalikan', $p->peminjaman_id) }}" 
-                                   class="btn-action btn-kembali" 
-                                   title="Kembalikan Barang"
-                                   onclick="return confirm('Apakah Anda yakin barang ini sudah dikembalikan?')">
-                                    <i class="fas fa-undo-alt"></i> Kembalikan
-                                </a>
+                        </td>
+                        <td>
+                            @if($p->tanggal_kembali)
+                                <div class="tanggal-info">
+                                    <div class="tanggal-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <span>{{ \Carbon\Carbon::parse($p->tanggal_kembali)->format('d/m/Y') }}</span>
+                                    </div>
+                                    <div class="tanggal-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>{{ \Carbon\Carbon::parse($p->tanggal_kembali)->format('H:i') }}</span>
+                                    </div>
+                                </div>
                             @else
-                                <span class="btn-action btn-done">
-                                    <i class="fas fa-check"></i> Selesai
+                                <span style="color: #94a3b8; font-style: italic;">-</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($p->status == 'dipinjam')
+                                <span class="status-badge status-dipinjam">
+                                    <i class="fas fa-clock"></i> Dipinjam
+                                </span>
+                            @else
+                                <span class="status-badge status-dikembalikan">
+                                    <i class="fas fa-check-circle"></i> Dikembalikan
                                 </span>
                             @endif
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="9">
-                        <div class="empty-state">
-                            <i class="fas fa-book"></i>
-                            <p>Belum ada data peminjaman</p>
-                            <a href="{{ route('peminjaman.create') }}" class="btn-primary">
-                                <i class="fas fa-plus"></i> Tambah Peminjaman Pertama
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                @if($p->status == 'dipinjam')
+                                    <a href="{{ route('peminjaman.edit', $p->peminjaman_id) }}" class="btn-action btn-edit" title="Edit Peminjaman">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ route('peminjaman.kembalikan', $p->peminjaman_id) }}" 
+                                       class="btn-action btn-kembali" 
+                                       title="Kembalikan Barang"
+                                       onclick="return confirm('Apakah Anda yakin barang ini sudah dikembalikan?')">
+                                        <i class="fas fa-undo-alt"></i>
+                                    </a>
+                                @else
+                                    <span class="btn-action btn-done">
+                                        <i class="fas fa-check"></i> Selesai
+                                    </span>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-book"></i>
+                                <p>Belum ada data peminjaman</p>
+                                <a href="{{ route('peminjaman.create') }}" class="btn-primary">
+                                    <i class="fas fa-plus"></i> Tambah Peminjaman Pertama
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
