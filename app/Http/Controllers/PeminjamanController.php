@@ -7,8 +7,8 @@ use App\Models\Peminjaman;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Barang;
-use Illuminate\Support\Facades\Mail; // tambahan
-use App\Mail\PeminjamanMail; // tambahan
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PeminjamanMail;
 
 class PeminjamanController extends Controller
 {
@@ -45,7 +45,7 @@ class PeminjamanController extends Controller
             return redirect()->back()->with('error','Stok barang tidak cukup');
         }
 
-        Peminjaman::create([
+        $peminjaman = Peminjaman::create([
             'guru_id' => $request->guru_id,
             'kelas_id' => $request->kelas_id,
             'barang_id' => $request->barang_id,
@@ -54,19 +54,14 @@ class PeminjamanController extends Controller
             'status' => 'dipinjam'
         ]);
 
-        // =========================
-        // KIRIM EMAIL NOTIFIKASI
-        // =========================
+        $barang->jumlah_tersedia -= $request->jumlah_pinjam;
+        $barang->save();
+
         Mail::to('admin@gmail.com')->send(new PeminjamanMail($peminjaman));
 
         return redirect()->route('peminjaman.index')
             ->with('success', 'Peminjaman berhasil ditambahkan');
-        $barang->jumlah_tersedia -= $request->jumlah_pinjam;
-        $barang->save();
-
-        return redirect()->route('peminjaman.index')->with('success','Barang berhasil dipinjam');
     }
-
 
     public function kembalikan($id)
     {
@@ -90,7 +85,6 @@ class PeminjamanController extends Controller
         return redirect()->route('peminjaman.index')->with('success','Barang berhasil dikembalikan');
     }
 
-
     public function edit($id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
@@ -100,10 +94,6 @@ class PeminjamanController extends Controller
 
         return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
     }
-
-        return view('peminjaman.edit', compact('peminjaman','guru','kelas','barang'));
-    }
-
 
     public function update(Request $request, $id)
     {
