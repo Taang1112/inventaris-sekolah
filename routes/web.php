@@ -9,6 +9,12 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Mail;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -65,10 +71,11 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
     Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
-    // export
+    // Export
     Route::get('/barang/export', [BarangController::class,'exportExcel'])->name('barang.export');
     Route::get('/guru/export', [GuruController::class,'exportExcel'])->name('guru.export');
     Route::get('/kelas/export', [KelasController::class,'exportExcel'])->name('kelas.export');
+
     Route::get('/export-semua', [DashboardController::class,'exportSemuaExcel'])->name('export.semua');
     Route::get('/export/pdf', [DashboardController::class,'exportPdfSemua'])->name('export.pdf');
 
@@ -81,11 +88,12 @@ Route::middleware(['auth','role:admin'])->group(function () {
 
 Route::middleware(['auth','role:user'])->group(function () {
 
-   Route::middleware(['auth','role:user'])->group(function () {
-
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+
     Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
+
     Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+
     Route::get('/peminjaman/{id}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
 
     Route::put('/peminjaman/{id}', [PeminjamanController::class, 'update'])->name('peminjaman.update');
@@ -96,16 +104,18 @@ Route::middleware(['auth','role:user'])->group(function () {
 
 });
 
-Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
-Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
+
+// =====================
+// TEST EMAIL
+// =====================
 
 Route::get('/test-mail', function () {
+
     Mail::raw('Test email dari Laravel', function ($message) {
         $message->to('test@gmail.com')
-                ->subject('Test Mail');
+                ->subject('Test Mail Laravel');
     });
 
     return 'Email terkirim';
-});
-require __DIR__.'/auth.php';
+
 });
